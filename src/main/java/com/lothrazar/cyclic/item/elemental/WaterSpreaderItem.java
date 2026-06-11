@@ -24,10 +24,10 @@
 package com.lothrazar.cyclic.item.elemental;
 
 import com.lothrazar.cyclic.item.ItemBaseCyclic;
-import com.lothrazar.library.util.EntityUtil;
-import com.lothrazar.library.util.ShapeUtil;
+import com.lothrazar.library.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.UseOnContext;
@@ -35,7 +35,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.ModConfigSpec;
+
+import java.util.List;
 
 public class WaterSpreaderItem extends ItemBaseCyclic {
 
@@ -49,42 +53,49 @@ public class WaterSpreaderItem extends ItemBaseCyclic {
   @Override
   public InteractionResult useOn(UseOnContext context) {
     Player player = context.getPlayer();
-    // 
     BlockPos pos = context.getClickedPos();
     Direction side = context.getClickedFace();
-    if (side != null) {
-      pos = pos.relative(side);
+    boolean isLevelClientSide = context.getLevel().isClientSide();
+
+    if (spreadWaterFromCenter(context.getLevel(), pos.relative(side))) {
+      if (player != null) {
+        EntityUtil.setCooldownItem(player, this, COOLDOWN);
+        SoundUtil.playSound(player, SoundEvents.PLAYER_SPLASH);
+        player.swing(context.getHand());
+
+        if (!isLevelClientSide) {
+          ItemStackUtil.damageItem(player, context.getItemInHand());
+        }
+      }
+
+      return InteractionResult.sidedSuccess(isLevelClientSide);
     }
-    spreadWaterFromCenter(context.getLevel(), player, pos);
-    player.swing(context.getHand());
     return super.useOn(context);
   }
 
-  private boolean spreadWaterFromCenter(Level world, Player player, BlockPos posCenter) {
+  private boolean spreadWaterFromCenter(Level world, BlockPos posCenter) {
     int count = 0;
-    for (BlockPos pos : ShapeUtil.squareHorizontalFull(posCenter, RADIUS.get())) {
-      if (world.isWaterAt(pos) && world.getBlockState(pos).getBlock() == Blocks.WATER) {
-        world.setBlockAndUpdate(pos, Blocks.WATER.defaultBlockState());
+    final BlockState waterState = Blocks.WATER.defaultBlockState();
+    List<BlockPos> blocks = ShapeUtil.squareHorizontalFull(posCenter, RADIUS.get());
+
+    for (BlockPos pos : blocks) {
+      FluidState fluid = world.getFluidState(pos);
+      if (fluid.is(Fluids.FLOWING_WATER) && !fluid.isSource()) {
+        world.setBlockAndUpdate(pos, waterState);
         count++;
-      }
-      else {
+      } else {
         BlockState state = world.getBlockState(pos);
         if (state.hasProperty(BlockStateProperties.WATERLOGGED)
-            && !state.getValue(BlockStateProperties.WATERLOGGED).booleanValue()
-            && this.isWaterNextdoor(world, pos)) {
-          //  flow it into the loggable
+                && !state.getValue(BlockStateProperties.WATERLOGGED)
+                && this.isWaterNextdoor(world, pos)) {
+          // Flow it into the loggable
           state = state.setValue(BlockStateProperties.WATERLOGGED, true);
           world.setBlockAndUpdate(pos, state);
           count++;
         }
       }
     }
-    boolean success = count > 0;
-    if (success) { //particles are on each location, sound is just once
-      EntityUtil.setCooldownItem(player, this, COOLDOWN);
-      //      UtilSound.playSound(player, SoundEvents.ENTITY_PLAYER_SPLASH);
-    }
-    return success;
+    return count > 0;
   }
 
   private boolean isWaterNextdoor(Level world, BlockPos pos) {

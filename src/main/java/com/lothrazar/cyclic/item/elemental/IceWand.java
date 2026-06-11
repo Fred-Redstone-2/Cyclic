@@ -56,10 +56,10 @@ public class IceWand extends ItemBaseCyclic {
     Direction side = context.getClickedFace();
     boolean isLevelClientSide = context.getLevel().isClientSide();
 
-    if (spreadWaterFromCenter(context.getLevel(), pos.relative(side))) {
-      //but the real sound
+    if (spreadIceFromCenter(context.getLevel(), pos.relative(side))) {
       if (player != null) {
         SoundUtil.playSound(player, Blocks.PACKED_ICE.defaultBlockState().getSoundType().getBreakSound());
+        player.swing(context.getHand());
 
         if (!isLevelClientSide) {
           ItemStackUtil.damageItem(player, context.getItemInHand());
@@ -71,7 +71,7 @@ public class IceWand extends ItemBaseCyclic {
     return super.useOn(context);
   }
 
-  private boolean spreadWaterFromCenter(Level world, BlockPos posCenter) {
+  private boolean spreadIceFromCenter(Level world, BlockPos posCenter) {
     int count = 0;
     final BlockState iceState = Blocks.ICE.defaultBlockState();
     List<BlockPos> water = LevelWorldUtil.findBlocks(world, posCenter, Blocks.WATER, RADIUS.get());
@@ -79,7 +79,7 @@ public class IceWand extends ItemBaseCyclic {
     for (BlockPos pos : water) {
       FluidState fluid = world.getFluidState(pos);
       if (fluid.is(Fluids.WATER) && fluid.isSource()) {
-        world.setBlock(pos, iceState, Block.UPDATE_ALL);
+        world.setBlockAndUpdate(pos, iceState);
         count++;
       }
     }
