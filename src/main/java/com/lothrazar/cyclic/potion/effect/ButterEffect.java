@@ -4,13 +4,11 @@ import java.util.Arrays;
 import java.util.List;
 import com.lothrazar.cyclic.potion.CyclicMobEffect;
 import com.lothrazar.library.core.Const;
-import com.lothrazar.library.util.ItemStackUtil;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.event.tick.EntityTickEvent;
-import com.lothrazar.cyclic.registry.PotionEffectRegistry;
 
 public class ButterEffect extends CyclicMobEffect {
 
@@ -21,40 +19,40 @@ public class ButterEffect extends CyclicMobEffect {
   }
 
   @Override
-  public void tick(EntityTickEvent.Pre event) {
-    // delete me i guess
-    if(event.getEntity() instanceof LivingEntity living) {
-      var level = living.level();
-      if (level.random.nextDouble() > DROP_CHANCE) {
-        return;
-      }
-      List<EquipmentSlot> slots = null;
-      if (!living.onGround() || living.isSprinting()) {
-        int amplifier = living.getEffect(PotionEffectRegistry.BUTTERFINGERS).getAmplifier();
-        //sprinting or jumping or something
-        if (amplifier == Const.Potions.I) {
-          slots = Arrays.asList(EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
-        } else {
-          slots = Arrays.asList(EquipmentSlot.values());
+  public boolean shouldApplyEffectTickThisTick(int tickCount, int amplifier) {
+    return true;
+  }
+
+  @Override
+  public boolean applyEffectTick(LivingEntity entity, int amplifier) {
+    // Only execute on server
+    if (!entity.level().isClientSide() && entity instanceof Player player) {
+      // Sprinting or jumping
+      if (!player.onGround() || player.isSprinting()) {
+        if (player.getRandom().nextDouble() < DROP_CHANCE) {
+          this.dropRandomItem(player, amplifier);
         }
       }
-      if (slots == null) {
-        return;
-      }
-      int slotix = level.random.nextInt(slots.size());
-      ItemStack dropMe = living.getItemBySlot(slots.get(slotix));
-      ItemStackUtil.drop(level, living.blockPosition(), dropMe);
-      living.setItemSlot(slots.get(slotix), ItemStack.EMPTY);
     }
-    //    for (EquipmentSlot slot : slots) {
-    //      stack = entity.getItemStackFromSlot(slot);
-    //      if (stack.isEmpty() == false && world.rand.nextDouble() < DROP_CHANCE) {
-    //        if (world.isRemote) {
-    //          ModCyclic.network.sendToServer(new PacketEntityDropRandom(entity.getEntityId(), slot.ordinal()));
-    //        }
-    //        //          entity.setItemStackToSlot(slot, ItemStack.EMPTY);
-    //        break;
-    //      }
-    //    }
+    return true;
+  }
+
+  private void dropRandomItem(Player player, int amplifier) {
+    List<EquipmentSlot> slots;
+    if (amplifier == Const.Potions.I) {
+      slots = Arrays.asList(EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
+    } else {
+      slots = Arrays.asList(EquipmentSlot.values());
+    }
+
+    int randomSlot = player.getRandom().nextInt(slots.size());
+    EquipmentSlot slot = slots.get(randomSlot);
+    ItemStack stack = player.getItemBySlot(slot);
+
+    if (!stack.isEmpty()) {
+      final boolean dropRandom = true, retainOwnership = false;
+      player.drop(stack, dropRandom, retainOwnership);
+      player.setItemSlot(slot, ItemStack.EMPTY);
+    }
   }
 }
