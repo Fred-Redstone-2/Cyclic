@@ -19,6 +19,8 @@ public class FlightMayflyEffect extends CyclicMobEffect {
 
   private static void setMayFlyFromServer(LivingEntity entity, boolean mayflyIn) {
     if (entity instanceof ServerPlayer sp) {
+      if (sp.isCreative() || sp.isSpectator()) return;
+
       //set server-player
       sp.getAbilities().mayfly = mayflyIn;
       if (!mayflyIn) {
@@ -51,7 +53,7 @@ public class FlightMayflyEffect extends CyclicMobEffect {
   @Override
   public void isPotionApplicable(MobEffectEvent.Applicable event) {
     if (event.getEntity() instanceof Player player) {
-      if (player.isCreative()) { //no creative players should use this to fly
+      if (player.isCreative() || player.isSpectator()) { //no creative players should use this to fly
         event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
       }
     }

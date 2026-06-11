@@ -77,7 +77,7 @@
   "item.cyclic.shield_obsidian.guide":"Prevents knockback completely while blocking.  Takes no durability damage from projectiles or explosions (unless they bypass armor)",
   "item.cyclic.shield_bone":"Bone Shield",
   "item.cyclic.shield_bone.tooltip":"Average shield",
-  "item.cyclic.shield_bone.guide":"Takes no durability tamage from projectiles.  Not weaker than normal shields unlike some others",
+  "item.cyclic.shield_bone.guide":"Takes no durability damage from projectiles.  Not weaker than normal shields unlike some others",
   "item.cyclic.flute_summoning":"Summoning Flute",
   "item.cyclic.flute_summoning.tooltip":"Tap on a specific entity to summon it later",
   "item.cyclic.flute_summoning.teleported":"Attempting teleport...",
@@ -1406,7 +1406,7 @@
   "potion.butter.oops": "Butterfingers!  Dropped something when you moved.",
 
   "effect.cyclic.noclip": "Phasing",
-  "effect.cyclic.noclip.description": "Phasing",
+  "effect.cyclic.noclip.description": "Players go though blocks with this effect",
   "item.minecraft.potion.effect.cyclic_noclip": "Potion of Phasing",
   "item.minecraft.splash_potion.effect.cyclic_noclip": "Splash Potion of Phasing",
   "item.minecraft.lingering_potion.effect.cyclic_noclip": "Lingering Potion of Phasing",

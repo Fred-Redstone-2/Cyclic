@@ -3,6 +3,7 @@ package com.lothrazar.cyclic.item.datacard;
 import java.util.ArrayList;
 import java.util.List;
 import com.lothrazar.cyclic.item.ItemBaseCyclic;
+import com.lothrazar.library.util.TagDataUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -118,7 +119,7 @@ public class BlockstateCard extends ItemBaseCyclic {
     //is crouching: do exact state is false, do only block
     stateTag.putBoolean(EXACT_TAG, !player.isCrouching());
     stateTags.add(stateTag);
-    held.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().put(STATESTAG, stateTags);
+    TagDataUtil.setItemStackNBTVal(held, STATESTAG, stateTags);
     player.swing(hand);
     return InteractionResult.SUCCESS;
   }

@@ -61,8 +61,6 @@ public class EventRegistry {
     NeoForge.EVENT_BUS.register(new TravellerEnchant());
     NeoForge.EVENT_BUS.register(new VenomEnchant());
     NeoForge.EVENT_BUS.register(new XpEnchant());
-    event.enqueueWork(() -> {
-      CompostRegistry.setup();
-    });
+    event.enqueueWork(CompostRegistry::setup);
   }
 }

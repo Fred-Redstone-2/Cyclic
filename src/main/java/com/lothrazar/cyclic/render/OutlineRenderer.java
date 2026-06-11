@@ -55,7 +55,7 @@ public class OutlineRenderer {
     ItemStack itemStackHeld = BuilderItem.getIfHeld(player);
     if (itemStackHeld.getItem() instanceof BuilderItem) {
       //
-      BlockState targetState = BuilderActionType.getBlockState(level, itemStackHeld);
+      BlockState targetState = BuilderActionType.getBlockState(itemStackHeld);
       if (targetState != null) {
         //ok still 
         RenderUtil.drawStack(event.getGuiGraphics(), new ItemStack(targetState.getBlock()));

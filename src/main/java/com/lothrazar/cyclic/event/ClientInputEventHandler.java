@@ -25,12 +25,16 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.lwjgl.glfw.GLFW;
 
 public class ClientInputEventHandler {
 
   @SubscribeEvent
   public void onKeyInput(InputEvent.Key event) {
     MultiJumpEnchant.onKeyInput(Minecraft.getInstance().player);
+    if (event.getKey() == Minecraft.getInstance().options.keyJump.getKey().getValue() && event.getAction() == GLFW.GLFW_PRESS) {
+      MultiJumpEnchant.onKeyInput(Minecraft.getInstance().player);
+    }
   }
 
   @SubscribeEvent // MouseScrollEvent -> MouseScrollingEvent

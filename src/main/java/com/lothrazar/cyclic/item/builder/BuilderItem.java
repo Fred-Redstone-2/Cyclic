@@ -36,7 +36,7 @@ public class BuilderItem extends ItemHasEnergy {
     super.appendHoverText(stack, worldIn, tooltip, flagIn);
     String msg = ChatFormatting.GREEN + ChatUtil.lang(BuilderActionType.getName(stack));
     tooltip.add(Component.translatable(msg));
-    BlockState target = BuilderActionType.getBlockState(null, stack);
+    BlockState target = BuilderActionType.getBlockState(stack);
     String block = "scepter.cyclic.nothing";
     if (target != null) {
       block = target.getBlock().getDescriptionId();

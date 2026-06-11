@@ -70,15 +70,18 @@ public class LocationGpsCard extends ItemBaseCyclic {
     Direction side = context.getClickedFace();
     ItemStack held = player.getMainHandItem();
     TagDataUtil.setItemStackBlockPos(held, pos);
-    held.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().putString(NBT_DIM, LevelWorldUtil.dimensionToString(player.level()));
+
+    String dimText = LevelWorldUtil.dimensionToString(player.level());
+    TagDataUtil.setItemStackNBTVal(held, NBT_DIM, dimText);
+
     TagDataUtil.setItemStackNBTVal(held, NBT_SIDE, side.ordinal());
     TagDataUtil.setItemStackNBTVal(held, NBT_SIDE + "facing", player.getDirection().ordinal());
     ChatUtil.sendStatusMessage(player, ChatUtil.lang("item.location.saved") + ChatUtil.blockPosToString(pos));
     // fl
     Vec3 vec = context.getClickLocation();
-    held.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().putDouble("hitx", vec.x - pos.getX());
-    held.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().putDouble("hity", vec.y - pos.getY());
-    held.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().putDouble("hitz", vec.z - pos.getZ());
+    TagDataUtil.setItemStackNBTVal(held, "hitx", vec.x - pos.getX());
+    TagDataUtil.setItemStackNBTVal(held, "hity", vec.y - pos.getY());
+    TagDataUtil.setItemStackNBTVal(held, "hitz", vec.z - pos.getZ());
     return InteractionResult.SUCCESS;
   }
 
