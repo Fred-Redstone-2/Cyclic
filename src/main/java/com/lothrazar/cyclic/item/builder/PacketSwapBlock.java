@@ -68,7 +68,7 @@ public class PacketSwapBlock implements CustomPacketPayload {
 
       var player = ctx.player();
       ItemStack itemStackHeld = player.getItemInHand(message.hand);
-      BlockState targetState = BuilderActionType.getBlockState(player.level(), itemStackHeld);
+      BlockState targetState = BuilderActionType.getBlockState(itemStackHeld);
       if (targetState == null || itemStackHeld.getItem() instanceof BuilderItem == false) {
         return;
       }

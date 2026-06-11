@@ -31,7 +31,6 @@ public class ClientInputEventHandler {
 
   @SubscribeEvent
   public void onKeyInput(InputEvent.Key event) {
-    MultiJumpEnchant.onKeyInput(Minecraft.getInstance().player);
     if (event.getKey() == Minecraft.getInstance().options.keyJump.getKey().getValue() && event.getAction() == GLFW.GLFW_PRESS) {
       MultiJumpEnchant.onKeyInput(Minecraft.getInstance().player);
     }
