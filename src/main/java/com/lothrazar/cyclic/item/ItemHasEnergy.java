@@ -16,7 +16,7 @@ import java.util.List;
 public class ItemHasEnergy extends ItemFlib {
 
   public ItemHasEnergy(Properties properties) {
-    super(properties);
+    super(properties, new Settings().tooltip());
   }
   public ItemHasEnergy(Properties properties, Settings settings) {
     super(properties, settings);

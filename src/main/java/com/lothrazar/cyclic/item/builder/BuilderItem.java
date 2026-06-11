@@ -27,7 +27,7 @@ public class BuilderItem extends ItemHasEnergy {
   public static ModConfigSpec.IntValue MAX;
 
   public BuilderItem(Properties properties, BuildStyle t) {
-    super(properties.stacksTo(1));
+    super(properties.stacksTo(1), new Settings().noTooltip());
     style = t;
   }
 
