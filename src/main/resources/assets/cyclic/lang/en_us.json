@@ -1063,7 +1063,7 @@
   "item.cyclic.scepter_water.tooltip": "Replace nearby flowing water with source water",
   "item.cyclic.scepter_water.guide": "Turns nearby flowing water into source water.  Fills lakes and rivers out very quickly.",
   "item.cyclic.scepter_teleport": "Ender Scepter",
-  "item.cyclic.scepter_teleport.tooltip": "Teleports where you look, using Ender Pearls as fuel",
+  "item.cyclic.scepter_teleport.tooltip": "Teleports where you look, using Ender Pearls to repair itself",
   "item.cyclic.scepter_teleport.guide": "The Ender Scepter when held and charged, can be used to teleport large distances to the block that you're looking at. Automatically consumes Ender Pearls in your inventory to repair itself.",
   "item.cyclic.scepter_elevation": "Rod of Elevation",
   "item.cyclic.scepter_elevation.tooltip": "Teleport yourself or the target entity up to the nearest surface above",

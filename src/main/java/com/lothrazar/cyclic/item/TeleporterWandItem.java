@@ -24,7 +24,7 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class TeleporterWandItem extends ItemBaseCyclic {
 
-  private static final int TICK_REPAIR = 4;
+  private static final int DAMAGE_REPAIR_THRESHOLD = 4;
   private static final int TICKS_USING = 93000;
   public static ModConfigSpec.IntValue RANGE;
 
@@ -51,8 +51,8 @@ public class TeleporterWandItem extends ItemBaseCyclic {
 
   @Override
   public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-    if (entityIn instanceof Player && stack.isDamaged() && stack.getDamageValue() >= TICK_REPAIR) {
-      this.tryRepairWith(stack, (Player) entityIn, Items.ENDER_PEARL);
+    if (entityIn instanceof Player && stack.isDamaged() && stack.getDamageValue() >= DAMAGE_REPAIR_THRESHOLD) {
+      this.tryRepairWith(stack, (Player) entityIn, Items.ENDER_PEARL, DAMAGE_REPAIR_THRESHOLD);
     }
   }
 
