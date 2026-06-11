@@ -5,8 +5,10 @@ import com.lothrazar.library.core.Const;
 import com.lothrazar.library.util.EnchantUtil;
 import com.lothrazar.library.packet.PacketPlayerFalldamage;
 import com.lothrazar.library.util.EntityUtil;
+import com.lothrazar.library.util.ParticleUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.ItemStack;
@@ -62,6 +64,7 @@ public class MultiJumpEnchant {
 
     float angle = (player.getDeltaMovement().x == 0 && player.getDeltaMovement().z == 0) ? 90 : ROTATIONPITCH;
     EntityUtil.launch(player, angle, POWER);
+    ParticleUtil.spawnParticle(player.getCommandSenderWorld(), ParticleTypes.CRIT, player.blockPosition(), 7);
     player.setData(LAUNCH_USES, jumpsUsed);
 
     player.fallDistance = 0;

@@ -1,5 +1,6 @@
 package com.lothrazar.cyclic.item;
 
+import com.lothrazar.library.util.TagDataUtil;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -8,12 +9,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.item.component.CustomData;
 
 public class LaserItem extends ItemHasEnergy {
 
-  public static final int DELAYDAMAGETICKS = 5;
-  //  public static final double RANGE_FACTOR = 8;
+  private static final String NBT_TAG = "damage_cooldown";
 
   public LaserItem(Properties properties) {
     super(properties.stacksTo(1));
@@ -48,12 +47,12 @@ public class LaserItem extends ItemHasEnergy {
   @Override
   public void releaseUsing(ItemStack stack, Level world, LivingEntity entity, int chargeTimer) {}
 
-  public static void resetStackDamageCool(ItemStack lasercannon, long gametime) {
-    CustomData.EMPTY.copyTag().putLong("damagecooldown", gametime);
+  public static void resetStackDamageCool(ItemStack stack, long gametime) {
+    TagDataUtil.setItemStackNBTVal(stack, NBT_TAG, gametime);
   }
 
-  public static int getDamageCooldown(ItemStack lasercannon) {
-    int thisOne = CustomData.EMPTY.copyTag().getInt("damagecooldown");
+  public static long getDamageCooldown(ItemStack stack) {
+    long thisOne = TagDataUtil.getItemStackNBT(stack).getLong(NBT_TAG);
     return thisOne;
   }
 }
