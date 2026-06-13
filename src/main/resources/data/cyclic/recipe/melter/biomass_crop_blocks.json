@@ -1,0 +1,16 @@
+{
+  "type": "cyclic:melter",
+  "ingredients": [
+    {
+      "tag": "c:crop_blocks"
+    }
+  ],
+  "energy": {
+    "rfpertick": 250,
+    "ticks": 600
+  },
+  "result": {
+    "id": "cyclic:biomass",
+    "amount": 500
+  }
+}

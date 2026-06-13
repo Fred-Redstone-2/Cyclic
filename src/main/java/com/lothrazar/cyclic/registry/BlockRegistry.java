@@ -317,8 +317,8 @@ public class BlockRegistry {
   public static final DeferredBlock<Block> CASK = BLOCKS.register("cask", () -> new BlockCask(Block.Properties.of()));
   public static final DeferredBlock<Block> CRATE = BLOCKS.register("crate", () -> new BlockCrate(Block.Properties.of()));
   public static final DeferredBlock<Block> CRATE_MINI = BLOCKS.register("crate_mini", () -> new BlockCrateMini(Block.Properties.of().forceSolidOn()));
-  public static final DeferredBlock<Block> EYE_REDSTONE = BLOCKS.register("eye_redstone", () -> new BlockEye(Block.Properties.of()));
-  public static final DeferredBlock<Block> EYE_TELEPORT = BLOCKS.register("eye_teleport", () -> new BlockEyeTp(Block.Properties.of()));
+  public static final DeferredBlock<Block> EYE_REDSTONE = BLOCKS.register("ender_eye_block", () -> new BlockEye(Block.Properties.of()));
+  public static final DeferredBlock<Block> EYE_TELEPORT = BLOCKS.register("ender_pearl_block", () -> new BlockEyeTp(Block.Properties.of()));
   public static final DeferredBlock<Block> PLACER = BLOCKS.register("placer", () -> new BlockPlacer(Block.Properties.of()));
   public static final DeferredBlock<Block> BREAKER = BLOCKS.register("breaker", () -> new BlockBreaker(Block.Properties.of()));
   public static final DeferredBlock<Block> DROPPER = BLOCKS.register("dropper", () -> new BlockDropper(Block.Properties.of()));
@@ -368,15 +368,20 @@ public class BlockRegistry {
   public static final DeferredBlock<Block> ENDER_SHELF = BLOCKS.register("ender_shelf", () -> new BlockEnderShelf(Block.Properties.of()));
   public static final DeferredBlock<Block> ENDER_CONTROLLER = BLOCKS.register("ender_controller", () -> new BlockEnderCtrl(Block.Properties.of()));
   public static final DeferredBlock<Block> MAGNET_BLOCK = BLOCKS.register("magnet_block", () -> new BlockMagnetPanel(Block.Properties.of().forceSolidOn()));
-  public static final DeferredBlock<Block> BUTTON_BASALT = BLOCKS.register("button_basalt", () -> new ButtonBlockMat(Block.Properties.of(), 30, true, 4));
-  public static final DeferredBlock<Block> BUTTON_BLACKSTONE = BLOCKS.register("button_blackstone", () -> new ButtonBlockMat(Block.Properties.of(), 20, true, 8));
+  public static final DeferredBlock<Block> BUTTON_BASALT = BLOCKS.register("button_basalt", () -> new ButtonBlockMat(Block.Properties.of(), 30, true, 2));
+  public static final DeferredBlock<Block> BUTTON_BLACKSTONE = BLOCKS.register("button_blackstone", () -> new ButtonBlockMat(Block.Properties.of(), 20, true, 10));
+  public static final DeferredBlock<Block> BUTTON_DEEPSLATE = BLOCKS.register("button_deepslate", () -> new ButtonBlockMat(Block.Properties.of(), 40, false, 12));//hardest material so highest
+  public static final DeferredBlock<Block> BUTTON_TUFF = BLOCKS.register("button_tuff", () -> new ButtonBlockMat(Block.Properties.of(), 30, true, 8));
   public static final DeferredBlock<Block> BATTERY_CLAY = BLOCKS.register("battery_clay", () -> new ClayBattery(Block.Properties.of()));// NOGUI
   public static final DeferredBlock<Block> GENERATOR_SOLAR = BLOCKS.register("generator_solar", () -> new BlockGeneratorSolar(Block.Properties.of().forceSolidOn())); // NOGUI
   public static final DeferredBlock<Block> ALTAR_SOLICITING = BLOCKS.register("altar_soliciting", () -> new BlockAltarNoTraders(Block.Properties.of()
       .lightLevel(p -> p.getValue(BlockCyclic.LIT) ? 3 : 0).forceSolidOn()));
   public static final DeferredBlock<Block> ALTAR_DESTRUCTION = BLOCKS.register("altar_destruction", () -> new BlockDestruction(Block.Properties.of()));
   public static final DeferredBlock<Block> WAXED_REDSTONE = BLOCKS.register("waxed_redstone", () -> new BlockWaxedRedstone(Block.Properties.of())); // , MaterialColor.FIRE
+
   //
+  // TODO: or delete
   //  public static final DeferredBlock<Block> PLATE_VECTOR= BLOCKS.register("plate_vector", () -> new Block(Block.Properties.of()));
   //  public static final DeferredBlock<Block> ENCHANTER = BLOCKS.register("enchanter", () -> new Block(Block.Properties.of()));
+
 }

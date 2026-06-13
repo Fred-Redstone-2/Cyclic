@@ -298,7 +298,8 @@ public class ConfigRegistry {
     ReachEnchant.CFG = CFG.comment(" Set false to stop enchantment from working").define(ReachEnchant.ID + ".enabled", true);
     StepEnchant.CFG = CFG.comment(" Set false to stop enchantment from working").define(StepEnchant.ID + ".enabled", true);
     SteadyEnchant.CFG = CFG.comment(" Set false to stop enchantment from working").define(SteadyEnchant.ID + ".enabled", true);
-    SoulboundEnchant.CFG = CFG.comment(" Set false to stop enchantment from working. When enabled, one item with this enchant is kept on player death.").define(SoulboundEnchant.ID + ".enabled", true);
+    SoulboundEnchant.CFG = CFG.comment(" Set false to stop enchantment from working. When enabled, all items with this enchant are kept on player death.").define(SoulboundEnchant.ID + ".enabled", true);
+    SoulboundEnchant.DURABILITY_COST = CFG.comment(" Durability damage applied to each soulbound item on death. Set to 0 to disable.").defineInRange(SoulboundEnchant.ID + ".durability_cost", 5, 0, 9999);
     LastStandEnchant.CFG = CFG.comment(" Set false to stop enchantment from working").define(LastStandEnchant.ID + ".enabled", true);
     LastStandEnchant.COST = CFG.comment(" Base XP cost to activate at level 1 (level 2 is this/2)").defineInRange(LastStandEnchant.ID + ".xp_cost", 50, 1, 9999);
     LastStandEnchant.ABS = CFG.comment(" How many ticks of Absorption hearts given on trigger, 0 to disable").defineInRange(LastStandEnchant.ID + ".potion_ticks", 600, 0, 9999);
@@ -541,8 +542,9 @@ public class ConfigRegistry {
             0.0010000000000F, 1F);
     TileAnvilMagma.FLUIDCOST = CFG.comment(" Cost of magma fluid per action").defineInRange("anvil_magma.fluid_cost", 100, 1, 64000);
     CFG.push("disenchanter");
-    TileDisenchant.FLUIDCOST = CFG.comment(" Cost of (or payment for if negative) per enchanted book generated").defineInRange("fluid_cost", 100, -1000, 16000);
-    TileDisenchant.POWERCONF = CFG.comment(" Power per use disenchanter").defineInRange("energy_cost", 2500, 0, Integer.MAX_VALUE);
+    TileDisenchant.FLUIDCOST = CFG.comment(" Fluid cost per enchanted book generated. Negative value means the machine pays out that fluid amount instead of consuming it.").defineInRange("fluid_cost", -100, -1000, 16000);
+    TileDisenchant.POWERCONF = CFG.comment(" Power per use disenchanter").defineInRange("energy_cost", 7500, 0, Integer.MAX_VALUE);
+    TileDisenchant.TIMERCONF = CFG.comment(" Ticks required per operation").defineInRange("timer", 300, 1, Integer.MAX_VALUE);
     CFG.pop();
     CFG.push("anvil_void");
     TileAnvilVoid.FLUIDPAY = CFG.comment(" Payment per void action, if not zero").defineInRange("fluid_cost", 25, 0, Integer.MAX_VALUE);
@@ -571,13 +573,13 @@ public class ConfigRegistry {
     TileTerraGlass.TIMER_FULL = CFG.comment(" ticks between growth cycles").defineInRange("timer", 100, 1, 10000);
     TileTerraGlass.HEIGHT = CFG.comment(" growth height below the glass").defineInRange("height", 8, 0, 32);
     CFG.pop(); // terra_preta
-    CFG.comment(" Ender Anchor settings").push("eye_teleport");
+    CFG.comment(" Ender Anchor settings").push("ender_pearl_block");
     TileEyeTp.RANGE = CFG.comment(" Maximum distance to activate").defineInRange("range", 128, 2, 256);
     TileEyeTp.HUNGER = CFG.comment(" Hunger cost on teleport").defineInRange("hunger", 1, 0, 20);
     TileEyeTp.EXP = CFG.comment(" Exp cost on teleport").defineInRange("exp", 0, 0, 500);
     TileEyeTp.FREQUENCY = CFG.comment(" Tick delay between checks, faster checks can consume server resources (1 means check every tick; 20 means only check once per second)")
         .defineInRange("frequency", 5, 1, 20);
-    CFG.pop(); // eye_teleport
+    CFG.pop(); // ender_pearl_block
     //
     //
     CFG.comment(" battery_clay settings").push("battery_clay");
@@ -607,7 +609,7 @@ public class ConfigRegistry {
     TileFisher.CHANCE = CFG.comment(" Chance to Fish from nearby water.  Smaller values is slower fish").defineInRange("chance", 0.06, 0.000001, 0.999);
     CFG.pop();
     //
-    CFG.comment(" Ender Trigger settings").push("eye_redstone");
+    CFG.comment(" Ender Trigger settings").push("ender_eye_block");
     TileEye.RANGE = CFG.comment(" Maximum distance to activate").defineInRange("range", 32, 2, 256);
     TileEye.FREQUENCY = CFG.comment(" Tick delay between checks, faster checks can consume server resources (1 means check every tick; 20 means only check once per second)")
         .defineInRange("frequency", 5, 1, 20);

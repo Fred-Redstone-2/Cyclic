@@ -1,0 +1,16 @@
+{
+  "type": "cyclic:melter",
+  "ingredients": [
+    {
+      "item": "minecraft:rotten_flesh"
+    }
+  ],
+  "energy": {
+    "rfpertick": 100,
+    "ticks": 160
+  },
+  "result": {
+    "id": "cyclic:biomass",
+    "amount": 10
+  }
+}
