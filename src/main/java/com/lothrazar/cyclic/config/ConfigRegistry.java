@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.lothrazar.cyclic.CyclicLogger;
 import com.lothrazar.cyclic.ModCyclic;
 import com.lothrazar.cyclic.block.CandleWaterBlock;
 import com.lothrazar.cyclic.block.LavaSpongeBlock;
@@ -120,6 +119,7 @@ public class ConfigRegistry {
   private static ConfigValue<List<? extends String>> DISARM_IGNORE_LIST;
   public static ConfigValue<List<? extends String>> GLOOM_IGNORE_LIST;
   private static final String WALL = "####################################################################################";
+  public static IntValue CONVEYOR_EXTRACT_RATE;
   public static IntValue CHARM_LUCK;
   public static DoubleValue CHARM_SPEED;
   public static DoubleValue CHARM_ATTACK_SPEED;
@@ -325,10 +325,10 @@ public class ConfigRegistry {
     CommandRegistry.COMMANDDEV = CFG.comment(" True means only players with OP can use this /cyclic command").define(CyclicCommands.DEV.toString(), false);
     CommandRegistry.COMMANDPING = CFG.comment(" True means only players with OP can use this /cyclic command").define(CyclicCommands.PING.toString(), false);
     CFG.pop(); //command
-    CFG.comment(WALL, " Logging related configs", WALL)
-        .push("logging");
-    CyclicLogger.LOGINFO = CFG.comment(" Unblock info logs; very spammy; can be useful for testing certain issues").define("info", false);
-    CFG.pop(); //logging  
+//    CFG.comment(WALL, " Logging related configs", WALL)
+//        .push("logging");
+//    CyclicLogger.LOGINFO = CFG.comment(" Unblock info logs; very spammy; can be useful for testing certain issues").define("info", false);
+//    CFG.pop(); //logging
     CFG.comment(WALL, " Item specific configs", WALL)
         .push("items");
     //
@@ -438,7 +438,7 @@ public class ConfigRegistry {
     AutoCaveTorchItem.PREFER_WALLS = CFG.comment(" Whether to prioritise placing torches on walls").define("prefer_walls", true);
     AutoCaveTorchItem.PREFER_LEFT_WALL = CFG.comment(" Which wall to place torches on when digging a 1-wide tunnel", "True means left, False means right").define("prefer_left_wall", false);
     CFG.pop(); // caving_torch 
-    EdibleFlightItem.TICKS = CFG.comment(" Seconds of flight per chorus_flight").defineInRange("chorus_flight.ticks", 20 * 60, 1, 20 * 1000);
+    EdibleFlightItem.TICKS = CFG.comment(" Seconds of flight per chorus_flight").defineInRange("chorus_flight.ticks", 20 * 600, 1, 20 * 1000);
     EdibleSpecItem.TICKS = CFG.comment(" Seconds of noClip per chorus_spectral").defineInRange("chorus_spectral.ticks", 20 * 30, 1, 20 * 1000);
     MBALL_IGNORE_LIST = CFG.comment(" Entity ids that cannot be picked up with the Monster all").defineList("monster_ball.ignore_list", MBALL_IGNORE, it -> it instanceof String);
     CFG.comment(" Wand settings").push("scepter_teleport");
@@ -569,6 +569,9 @@ public class ConfigRegistry {
     TileTerraPreta.CHANCE = CFG.comment(" Chance that the crop will grow after the interval").defineInRange("growth_chance", 0.5, 0, 1);
     TileTerraPreta.HEIGHT = CFG.comment(" growth height above the soil").defineInRange("height", 8, 2, 32);
     CFG.pop(); // terra_preta
+    CFG.comment(" conveyor belt settings").push("conveyor");
+    ConfigRegistry.CONVEYOR_EXTRACT_RATE = CFG.comment(" How many ticks between each item extracted from an adjacent inventory (20 = 1 per second, 1 = 20 per second)").defineInRange("extract_rate", 10, 1, 1200);
+    CFG.pop(); // conveyor
     CFG.comment(" glass_terra settings").push("glass_terra");
     TileTerraGlass.TIMER_FULL = CFG.comment(" ticks between growth cycles").defineInRange("timer", 100, 1, 10000);
     TileTerraGlass.HEIGHT = CFG.comment(" growth height below the glass").defineInRange("height", 8, 0, 32);

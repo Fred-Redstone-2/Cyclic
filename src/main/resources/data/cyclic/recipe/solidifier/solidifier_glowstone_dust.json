@@ -1,0 +1,20 @@
+{
+  "type": "cyclic:solidifier",
+  "ingredients": [
+    {
+      "item": "minecraft:sand"
+    }
+  ],
+  "energy": {
+    "rfpertick": 100,
+    "ticks": 60
+  },
+  "mix": {
+    "tag": "c:glowstone",
+    "amount": 250
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:glowstone_dust"
+  }
+}

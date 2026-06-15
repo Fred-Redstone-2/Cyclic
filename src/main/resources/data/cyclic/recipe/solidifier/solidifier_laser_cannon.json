@@ -1,0 +1,26 @@
+{
+  "type": "cyclic:solidifier",
+  "ingredients": [
+    {
+      "item": "cyclic:gem_obsidian"
+    },
+    {
+      "item": "minecraft:diamond_block"
+    },
+    {
+      "item": "minecraft:dark_prismarine"
+    }
+  ],
+  "energy": {
+    "rfpertick": 5000,
+    "ticks": 2000
+  },
+  "mix": {
+    "tag": "c:amethyst",
+    "amount": 4000
+  },
+  "result": {
+    "count": 1,
+    "id": "cyclic:laser_cannon"
+  }
+}
