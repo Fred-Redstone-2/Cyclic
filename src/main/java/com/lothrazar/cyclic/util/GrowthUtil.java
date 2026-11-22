@@ -2,6 +2,7 @@ package com.lothrazar.cyclic.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -15,7 +16,7 @@ public class GrowthUtil {
       return false;
     }
     BlockState bState = world.getBlockState(current);
-    if (!bState.is(BlockTags.CROPS) && !bState.is(BlockTags.SAPLINGS)) {
+    if (!bState.is(BlockTags.CROPS) && !bState.is(BlockItemTags.SAPLINGS.block())) {
       return false;
     }
     if (bState.getBlock() instanceof BonemealableBlock crop) {

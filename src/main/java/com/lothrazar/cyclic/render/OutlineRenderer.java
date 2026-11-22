@@ -178,7 +178,7 @@ public class OutlineRenderer {
     if (renderCubes.keySet().size() > 0) {
       float scale = 1;
       PoseStack matrix = event.getPoseStack();
-      Vec3 view = Minecraft.getInstance().gameRenderer.getMainCamera().position();
+      Vec3 view = Minecraft.getInstance().gameRenderer.mainCamera().position();
       RenderBlockUtils.renderColourCubes(matrix, view, renderCubes, scale, alpha);
     }
     /****************** end rendering cubes. start laser beam render ********************/

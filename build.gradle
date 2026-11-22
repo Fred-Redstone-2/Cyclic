@@ -1,10 +1,10 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
-    id 'net.neoforged.moddev' version '2.0.141'
+    id 'net.neoforged.moddev' version '2.0.148'
     id 'idea'
-    id 'net.darkhax.curseforgegradle' version '1.1.25' apply false
-    id 'com.modrinth.minotaur' version '2.9.0' apply false
+    id 'net.darkhax.curseforgegradle' version '1.3.33' apply false
+    id 'com.modrinth.minotaur' version '2.10.0' apply false
 }
 def localProps = new Properties()
 def localFile = file("mod.properties")
@@ -168,16 +168,16 @@ dependencies {
   testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
   // for other mods depending on THIS FLIB library, use either a local copy or a maven
-  //  implementation "local.mods:flib:${minecraft_version}-${flib_version}"
-  implementation "curse.maven:flib-661261:${flib_file}"
+  implementation "local.mods:flib:${minecraft_version}-${flib_version}"
+  //implementation "curse.maven:flib-661261:${flib_file}"
 
 
   //these mods have API jars for compile as well as the full mod for local
-  compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
-  localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+  //compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
+  //localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
 
-  compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}+${minecraft_version}"
-  localRuntime "top.theillusivec4.curios:curios-neoforge:${curios_version}+${minecraft_version}"
+  //compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}+${minecraft_version}"
+  //localRuntime "top.theillusivec4.curios:curios-neoforge:${curios_version}+${minecraft_version}"
 
   // vazkii.patchouli:Patchouli:26.1-${patchouli_version}-NEOFORGE-SNAPSHOT is the correct maven.blamejared.com
   //  but no syced build on maven yet
@@ -185,8 +185,8 @@ dependencies {
   // use this once vazkii.patchouli:Patchouli:26.1-94-NEOFORGE-SNAPSHOT actually resolves there.
   // might not be a snapshot anymore at this point
 //  compileOnly "vazkii.patchouli:Patchouli:26.1-${patchouli_version}-NEOFORGE-SNAPSHOT"
-  compileOnly "curse.maven:patchouli-306770:8404543" // patchouli-neoforge-26.1-94.jar
-  localRuntime "curse.maven:patchouli-306770:8404543"
+  //compileOnly "curse.maven:patchouli-306770:8404543" // patchouli-neoforge-26.1-94.jar
+  //localRuntime "curse.maven:patchouli-306770:8404543"
 
  // compileOnly "com.blamejared.crafttweaker:CraftTweaker-neoforge-${minecraft_version}:${crafttweaker_version}"
 
