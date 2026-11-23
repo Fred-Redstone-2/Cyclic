@@ -26,7 +26,7 @@ public class AppleChocolate extends ItemBaseCyclic {
     boolean ret = false;
     java.util.List<Holder<MobEffect>> toRemove = new java.util.ArrayList<>();
     for (MobEffectInstance effect : entityLiving.getActiveEffects()) {
-      if (!effect.getEffect().value().isInstantenous()) { // approximation for not beneficial since isBeneficial is gone or changed
+      if (!effect.getEffect().value().isInstantaneous()) { // approximation for not beneficial since isBeneficial is gone or changed
         toRemove.add(effect.getEffect());
       }
     }

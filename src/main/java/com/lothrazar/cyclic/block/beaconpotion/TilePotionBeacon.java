@@ -238,7 +238,7 @@ public class TilePotionBeacon extends TileBlockEntityCyclic implements MenuProvi
    * non-harmful, non-instant
    */
   private boolean isPotionValid(MobEffectInstance eff) {
-    return eff.getEffect().value().isBeneficial() && !eff.getEffect().value().isInstantenous();
+    return eff.getEffect().value().isBeneficial() && !eff.getEffect().value().isInstantaneous();
   }
 
   @Override

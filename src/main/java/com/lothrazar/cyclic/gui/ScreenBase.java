@@ -81,7 +81,7 @@ public abstract class ScreenBase<T extends AbstractContainerMenu> extends Abstra
    * @param name
    */
   protected void drawName(GuiGraphicsExtractor ms, String name) {
-    drawString(ms, name, (this.getXSize() - this.font.width(name)) / 2, 6.0F);
+    drawString(ms, name, (this.imageWidth - this.font.width(name)) / 2, 6.0F);
   }
 
   protected void drawString(GuiGraphicsExtractor gg, String name, float x, float y) {

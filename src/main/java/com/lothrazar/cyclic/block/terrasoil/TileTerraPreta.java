@@ -5,6 +5,7 @@ import com.lothrazar.cyclic.registry.TileRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BonemealableBlock;
@@ -70,7 +71,7 @@ public class TileTerraPreta extends TileBlockEntityCyclic {
       }
     }
     //check tags
-    return bState.is(BlockTags.CROPS) || bState.is(BlockTags.SAPLINGS);
+    return bState.is(BlockTags.CROPS) || bState.getBlock().asItem().builtInRegistryHolder().is(ItemTags.SAPLINGS);
   }
 
   @Override

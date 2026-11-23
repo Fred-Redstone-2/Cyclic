@@ -49,7 +49,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -191,7 +191,7 @@ public class ItemEventHandler {
           target.setGlowingTag(true);
           BlockPos p = target.blockPosition();
           // lightning? 
-          LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(world, EntitySpawnReason.TRIGGERED);
+          LightningBolt lightningboltentity = EntityTypes.LIGHTNING_BOLT.create(world, EntitySpawnReason.TRIGGERED);
           lightningboltentity.snapTo(p.getX(), p.getY(), p.getZ());
           world.addFreshEntity(lightningboltentity);
           ItemStackUtil.damageItem(ply, find);

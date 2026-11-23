@@ -6,7 +6,7 @@ import com.mojang.blaze3d.vertex.QuadInstance;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -23,25 +23,25 @@ public final class SpinModelRenderer {
   }
 
   public static void render(StandaloneModelKey<QuadCollection> key, float angleDeg, PoseStack matrix,
-                            MultiBufferSource buffers, int light, int overlay) {
+                            SubmitNodeCollector submitNodeCollector, int light, int overlay) {
     QuadCollection model = Minecraft.getInstance().getModelManager().getStandaloneModel(key);
     if (model == null) {
       return;
     }
     RenderType renderType = RenderTypes.itemCutout(TextureAtlas.LOCATION_BLOCKS);
-    VertexConsumer vc = buffers.getBuffer(renderType);
     matrix.pushPose();
     matrix.translate(0.5D, 0D, 0.5D);
     matrix.mulPose(Axis.YP.rotationDegrees(angleDeg));
     matrix.translate(-0.5D, 0D, -0.5D);
-    PoseStack.Pose pose = matrix.last();
     QuadInstance instance = new QuadInstance();
     instance.setColor(-1);
     instance.setLightCoords(light);
     instance.setOverlayCoords(overlay);
-    for (BakedQuad q : model.getAll()) {
-      vc.putBakedQuad(pose, q, instance);
-    }
+    submitNodeCollector.submitCustomGeometry(matrix, renderType, (pose, vc) -> {
+      for (BakedQuad q : model.getAll()) {
+        vc.putBakedQuad(pose, q, instance);
+      }
+    });
     matrix.popPose();
   }
 }

@@ -31,11 +31,11 @@ import com.lothrazar.library.util.EntityUtil;
 import com.lothrazar.library.util.SoundUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -99,7 +99,7 @@ public class FluteItem extends ItemBaseCyclic implements IEntityInteractable {
     if (event.getItemStack().getItem() == this
         && !player.getCooldowns().isOnCooldown(event.getItemStack())
         && EntityUtil.haveSameDimension(target, player)) {
-      String id = EntityType.getKey(target.getType()).toString();
+      String id = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType()).toString();
       CustomData.update(DataComponents.CUSTOM_DATA, event.getItemStack(), t -> t.putString(FLUTENAME, target.getDisplayName().getString()));
       CustomData.update(DataComponents.CUSTOM_DATA, event.getItemStack(), t -> t.putString(EntityMagicNetEmpty.NBT_ENTITYID, id));
       CustomData.update(DataComponents.CUSTOM_DATA, event.getItemStack(), t -> t.putInt(UNIQUEMAGIC, target.getId()));

@@ -3,9 +3,11 @@ package com.lothrazar.cyclic.item.datacard;
 import com.lothrazar.cyclic.item.ItemBaseCyclic;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -62,7 +64,7 @@ public class EntityDataCard extends ItemBaseCyclic {
       atag.putString(ENTITY_KEY, "player");
     }
     else {
-      String key = EntityType.getKey(target.getType()).toString();
+      String key = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType()).toString();
       atag.putString(ENTITY_KEY, key);
     }
     stack.set(DataComponents.CUSTOM_DATA, CustomData.of(atag));
@@ -80,7 +82,12 @@ public class EntityDataCard extends ItemBaseCyclic {
   private static EntityType<?> getEntityType(ItemStack stack) {
     if (stack.getItem() instanceof EntityDataCard) {
       final String key = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getStringOr(ENTITY_KEY, "");
-      return EntityType.byString(key).orElse(null);
+      try {
+        return BuiltInRegistries.ENTITY_TYPE.getOptional(Identifier.parse(key)).orElse(null);
+      }
+      catch (IllegalArgumentException e) {
+        return null;
+      }
     }
     return null;
   }

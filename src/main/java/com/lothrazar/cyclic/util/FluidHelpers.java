@@ -5,9 +5,12 @@ import com.lothrazar.cyclic.item.datacard.fluid.FluidFilterCardItem;
 import com.lothrazar.library.data.Model3D;
 import com.lothrazar.library.render.FluidRenderMap;
 import com.lothrazar.library.render.FluidRenderMap.FluidFlow;
+import com.lothrazar.library.render.type.FluidTankRenderType;
+import com.lothrazar.library.util.RenderBlockUtils;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -23,6 +26,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.FluidUtil;
@@ -207,6 +211,17 @@ public class FluidHelpers {
       CACHED_FLUIDS.put(fluid, map);
     }
     return model;
+  }
+
+  public static void submitFluidModel(SubmitNodeCollector submitNodeCollector, PoseStack pose, FluidStack fluid, int stage, int light) {
+    Model3D model = getFluidModel(fluid, stage);
+    int color = RenderBlockUtils.getColorARGB(fluid);
+    int packedLight = RenderBlockUtils.calculateGlowLight(light, fluid);
+    submitNodeCollector.submitCustomGeometry(pose, FluidTankRenderType.RESIZABLE, (renderPose, buffer) -> {
+      PoseStack modelPose = new PoseStack();
+      modelPose.last().set(renderPose);
+      RenderBlockUtils.renderObject(model, modelPose, buffer, color, packedLight);
+    });
   }
 
   public static float getScale(FluidTank tank) {

@@ -2,8 +2,6 @@ package com.lothrazar.cyclic.block.facade.light;
 
 import com.lothrazar.library.util.FacadeUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -44,8 +42,6 @@ public class RenderLightFacade implements BlockEntityRenderer<TileLightFacade, R
   public void submit(State state, PoseStack matrixStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
     TileLightFacade te = state.blockEntity;
     BlockState facadeState = te.getFacadeState(te.getLevel());
-    MultiBufferSource.BufferSource ibuffer = Minecraft.getInstance().renderBuffers().bufferSource();
-    FacadeUtil.renderBlockState(te.getLevel(), te.getBlockPos(), ibuffer, matrixStack, facadeState, state.lightCoords, 0);
-    ibuffer.endBatch();
+    FacadeUtil.renderBlockState(te.getLevel(), te.getBlockPos(), submitNodeCollector, matrixStack, facadeState, state.lightCoords, 0);
   }
 }

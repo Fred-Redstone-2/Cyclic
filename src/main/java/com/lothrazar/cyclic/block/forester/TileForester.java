@@ -13,6 +13,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -215,7 +216,7 @@ public class TileForester extends TileBlockEntityCyclic implements MenuProvider 
   private boolean isSapling(ItemStack dropMe) {
     //sapling tag SHOULD exist. it doesnt. idk WHY
     BlockState block = Block.byItem(dropMe.getItem()).defaultBlockState();
-    return block.is(BlockTags.SAPLINGS) || block.getBlock() instanceof SaplingBlock;
+    return block.getBlock().asItem().builtInRegistryHolder().is(ItemTags.SAPLINGS) || block.getBlock() instanceof SaplingBlock;
   }
 
   private boolean isTree(BlockPos targetPos) {

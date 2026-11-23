@@ -2,12 +2,7 @@ package com.lothrazar.cyclic.block.tank;
 
 import com.lothrazar.cyclic.util.CapabilityUtil;
 import com.lothrazar.cyclic.util.FluidHelpers;
-import com.lothrazar.library.render.type.FluidTankRenderType;
-import com.lothrazar.library.util.RenderBlockUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -16,7 +11,8 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jspecify.annotations.Nullable;
 
 public class RenderTank implements BlockEntityRenderer<TileTank, RenderTank.State> {
@@ -44,23 +40,17 @@ public class RenderTank implements BlockEntityRenderer<TileTank, RenderTank.Stat
   public void submit(State state, PoseStack matrix, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
     TileTank tankHere = state.blockEntity;
     int light = state.lightCoords;
-    IFluidHandler handler = CapabilityUtil.fluid(tankHere.getLevel(), tankHere.getBlockPos());
-    if (handler == null || handler.getFluidInTank(0) == null) {
+    ResourceHandler<FluidResource> handler = CapabilityUtil.fluidResources(tankHere.getLevel(), tankHere.getBlockPos(), null);
+    if (handler == null || handler.size() == 0) {
       return;
     }
-    FluidStack fluid = handler.getFluidInTank(0);
+    FluidStack fluid = handler.getResource(0).toStack(handler.getAmountAsInt(0));
     if (fluid.isEmpty()) {
       return;
     }
-    //render types requiring a Normal vertex element can crash on the destroy-stage decal wrapper;
-    //our render type uses POSITION_COLOR_TEX_LIGHTMAP which has no Normal, so always go through
-    //our own immediate buffer source rather than any wrapped consumer.
-    MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
-    VertexConsumer buffer = bufferSource.getBuffer(FluidTankRenderType.RESIZABLE);
+    matrix.pushPose();
     matrix.scale(1F, FluidHelpers.getScale(tankHere.tank), 1F);
-    RenderBlockUtils.renderObject(FluidHelpers.getFluidModel(fluid, FluidHelpers.STAGES - 1),
-        matrix, buffer, RenderBlockUtils.getColorARGB(fluid),
-        RenderBlockUtils.calculateGlowLight(light, fluid));
-    bufferSource.endBatch();
+    FluidHelpers.submitFluidModel(submitNodeCollector, matrix, fluid, FluidHelpers.STAGES - 1, light);
+    matrix.popPose();
   }
 }

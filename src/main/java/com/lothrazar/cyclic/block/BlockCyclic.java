@@ -3,13 +3,11 @@ package com.lothrazar.cyclic.block;
 import com.lothrazar.cyclic.net.PacketDisplayFluidMessage;
 import com.lothrazar.cyclic.util.CapabilityUtil;
 import com.lothrazar.library.block.EntityBlockFlib;
-import com.lothrazar.library.util.SoundUtil;
 import com.lothrazar.library.util.StringParseUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -25,10 +23,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.fluids.FluidUtil;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.fluid.FluidUtil;
 
 public class BlockCyclic extends EntityBlockFlib {
 
@@ -89,25 +90,25 @@ public class BlockCyclic extends EntityBlockFlib {
         BlockEntity tankHere = level.getBlockEntity(pos);
         if (tankHere != null) {
           //getting fluid capability from a block
-          IFluidHandler handler = CapabilityUtil.fluid(level, pos, hit);
-          if (handler != null) {
-            if (FluidUtil.interactWithFluidHandler(player, hand, handler)) {
+          ResourceHandler<FluidResource> fluidResources = CapabilityUtil.fluidResources(level, pos, hit.getDirection());
+          if (fluidResources != null) {
+            if (FluidUtil.interactWithFluidHandler(player, hand, pos, fluidResources)) {
               if (player instanceof ServerPlayer sp) {
-                SoundUtil.playSoundFromServer(sp, SoundEvents.BUCKET_FILL, 1F, 1F);
                 sp.inventoryMenu.broadcastChanges();
               }
               //success so display new amount
-              if (handler.getFluidInTank(0) != null) {
-                displayClientFluidMessage(player, handler);
+              if (fluidResources.size() > 0) {
+                displayClientFluidMessage(player, fluidResources);
               }
             }
             else {
-              displayClientFluidMessage(player, handler);
+              displayClientFluidMessage(player, fluidResources);
             }
           }
         }
       }
-      if (FluidUtil.getFluidHandler(player.getMainHandItem()).isPresent()) { // reverted to how 1.16.5 does it fix sapphys bug
+      ItemStack mainHand = player.getMainHandItem();
+      if (!mainHand.isEmpty() && mainHand.getCapability(Capabilities.Fluid.ITEM, ItemAccess.forStack(mainHand)) != null) { // reverted to how 1.16.5 does it fix sapphys bug
         return InteractionResult.SUCCESS;
       }
     }
@@ -144,7 +145,7 @@ public class BlockCyclic extends EntityBlockFlib {
     return super.useWithoutItem(state, level, pos, player, hit);
   }
 
-  private void displayClientFluidMessage(Player player, IFluidHandler handler) {
+  private void displayClientFluidMessage(Player player, ResourceHandler<FluidResource> handler) {
     //compute the ratio key server-side, then send to the target client; the client's handler
     //checks the per-client config (ClientConfigCyclic.FLUID_BLOCK_STATUS) and displays.
     if (!(player instanceof ServerPlayer sp)) {
@@ -174,12 +175,12 @@ public class BlockCyclic extends EntityBlockFlib {
 
   //for comparators that dont use item inventories
   protected int calcRedstoneFromFluid(BlockEntity tileEntity) {
-    final IFluidHandler fluid = CapabilityUtil.fluid(tileEntity.getLevel(), tileEntity.getBlockPos());//tileEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).orElse(null);
-    if (fluid.getFluidInTank(0).isEmpty()) {
+    final ResourceHandler<FluidResource> fluid = CapabilityUtil.fluidResources(tileEntity.getLevel(), tileEntity.getBlockPos(), null);
+    if (fluid == null || fluid.size() == 0 || fluid.getResource(0).isEmpty()) {
       return 0;
     }
-    final float cap = fluid.getTankCapacity(0);
-    final float amt = fluid.getFluidInTank(0).getAmount();
+    final float cap = fluid.getCapacityAsInt(0, fluid.getResource(0));
+    final float amt = fluid.getAmountAsInt(0);
     final float f = amt / cap;
     return (int) Math.floor((f * 14.0F)) + 1;
   }

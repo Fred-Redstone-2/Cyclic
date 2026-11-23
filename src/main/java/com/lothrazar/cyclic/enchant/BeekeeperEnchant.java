@@ -4,7 +4,7 @@ import com.lothrazar.cyclic.registry.EnchantRegistry;
 import com.lothrazar.library.util.EnchantUtil;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.bee.Bee;
 import net.minecraft.world.entity.player.Player;
@@ -33,7 +33,7 @@ public class BeekeeperEnchant {
     if (!isEnabled()) {
       return;
     }
-    if (event.getNewAboutToBeSetTarget() instanceof Player target && event.getEntity().getType() == EntityType.BEE && event.getEntity() instanceof Bee bee) {
+    if (event.getNewAboutToBeSetTarget() instanceof Player target && event.getEntity().getType() == EntityTypes.BEE && event.getEntity() instanceof Bee bee) {
       int level = EnchantUtil.getCurrentArmorLevel(holder(target), target);
       if (level > 0) {
         event.setCanceled(true);
@@ -53,13 +53,13 @@ public class BeekeeperEnchant {
     int level = EnchantUtil.getCurrentArmorLevel(holder(event.getEntity()), event.getEntity());
     if (level >= 1 && event.getSource() != null && event.getSource().getDirectEntity() != null) {
       Entity esrc = event.getSource().getDirectEntity();
-      if (esrc.getType() == EntityType.BEE ||
-          esrc.getType() == EntityType.BAT ||
-          esrc.getType() == EntityType.LLAMA_SPIT) {
+      if (esrc.getType() == EntityTypes.BEE ||
+          esrc.getType() == EntityTypes.BAT ||
+          esrc.getType() == EntityTypes.LLAMA_SPIT) {
         event.setNewDamage(0);
       }
       if (level >= 2) {
-        if (esrc.getType() == EntityType.PHANTOM) {
+        if (esrc.getType() == EntityTypes.PHANTOM) {
           event.setNewDamage(0);
         }
       }

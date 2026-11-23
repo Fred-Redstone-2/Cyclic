@@ -3,12 +3,7 @@ package com.lothrazar.cyclic.block.sprinkler;
 import com.lothrazar.cyclic.render.SpinModelRenderer;
 import com.lothrazar.cyclic.util.CapabilityUtil;
 import com.lothrazar.cyclic.util.FluidHelpers;
-import com.lothrazar.library.render.type.FluidTankRenderType;
-import com.lothrazar.library.util.RenderBlockUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -17,7 +12,8 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jspecify.annotations.Nullable;
 
 public class RenderSprinkler implements BlockEntityRenderer<TileSprinkler, RenderSprinkler.State> {
@@ -48,27 +44,23 @@ public class RenderSprinkler implements BlockEntityRenderer<TileSprinkler, Rende
     TileSprinkler tankHere = state.blockEntity;
     float v = state.partialTicks;
     int light = state.lightCoords;
-    MultiBufferSource.BufferSource renderer = Minecraft.getInstance().renderBuffers().bufferSource();
-    IFluidHandler handler = CapabilityUtil.fluid(tankHere.getLevel(), tankHere.getBlockPos());
-    FluidStack fluid = handler == null ? FluidStack.EMPTY : handler.getFluidInTank(0);
+    ResourceHandler<FluidResource> handler = CapabilityUtil.fluidResources(tankHere.getLevel(), tankHere.getBlockPos(), null);
+    FluidStack fluid = handler == null || handler.size() == 0 ? FluidStack.EMPTY : handler.getResource(0).toStack(handler.getAmountAsInt(0));
     boolean spinning = fluid != null && !fluid.isEmpty();
     float angle = 0F;
     if (spinning && tankHere.getLevel() != null) {
       angle = ((tankHere.getLevel().getGameTime() % 60L) + v) * 6F;
     }
-    SpinModelRenderer.render(SpinModelRenderer.SPRINKLER_SPIN, angle, matrix, renderer, light, 0);
+    SpinModelRenderer.render(SpinModelRenderer.SPRINKLER_SPIN, angle, matrix, submitNodeCollector, light, 0);
     if (!spinning) {
-      renderer.endBatch();
       return;
     }
-    VertexConsumer buffer = renderer.getBuffer(FluidTankRenderType.RESIZABLE);
+    matrix.pushPose();
     matrix.scale(1F, FluidHelpers.getScale(tankHere.tank) / 4F, 1F);
     float f = 0.5F;
     matrix.scale(f, 1F, f);
     matrix.translate(f, 0, f);
-    RenderBlockUtils.renderObject(FluidHelpers.getFluidModel(fluid, FluidHelpers.STAGES - 1),
-        matrix, buffer, RenderBlockUtils.getColorARGB(fluid),
-        RenderBlockUtils.calculateGlowLight(light, fluid));
-    renderer.endBatch();
+    FluidHelpers.submitFluidModel(submitNodeCollector, matrix, fluid, FluidHelpers.STAGES - 1, light);
+    matrix.popPose();
   }
 }

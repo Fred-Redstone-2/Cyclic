@@ -8,8 +8,6 @@ import com.lothrazar.library.render.type.FakeBlockRenderTypes;
 import com.lothrazar.library.util.LevelWorldUtil;
 import com.lothrazar.library.util.RenderBlockUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -18,7 +16,6 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
 
@@ -34,7 +31,7 @@ public class RenderTransmit implements BlockEntityRenderer<TileWirelessTransmit,
   public RenderTransmit(BlockEntityRendererProvider.Context d) {
   }
 
-  public static void draw(int slot, TileWirelessTransmit tile, PoseStack matrixStackIn, MultiBufferSource bufferIn) {
+  public static void draw(int slot, TileWirelessTransmit tile, PoseStack matrixStackIn, SubmitNodeCollector submitNodeCollector) {
     BlockPosDim posPosTarget = tile.getTargetInSlot(slot);
     if (posPosTarget == null) {
       return;
@@ -48,7 +45,6 @@ public class RenderTransmit implements BlockEntityRenderer<TileWirelessTransmit,
     }
     //    //now render
     matrixStackIn.pushPose();
-    Matrix4f positionMatrix = matrixStackIn.last().pose();
     //diff between target and tile, targets always centered
     BlockPos tilePos = tile.getBlockPos();
     Vector3f from = new Vector3f(
@@ -56,10 +52,11 @@ public class RenderTransmit implements BlockEntityRenderer<TileWirelessTransmit,
         posTarget.getY() + .5F - tilePos.getY(),
         posTarget.getZ() + .5F - tilePos.getZ());
     Vector3f to = new Vector3f(.5F, .5F, .5F);
-    VertexConsumer builder = bufferIn.getBuffer(FakeBlockRenderTypes.LASER_MAIN_BEAM);
-    RenderLaser.drawDirewolfLaser(builder, positionMatrix, from, to, tile.getRed(), tile.getGreen(), tile.getBlue(), tile.getAlpha(), tile.getThick(), tilePos);
     final float coreThick = 0.01F;
-    RenderLaser.drawDirewolfLaser(builder, positionMatrix, from, to, 1, 1, 1, tile.getAlpha(), coreThick, tilePos);
+    submitNodeCollector.submitCustomGeometry(matrixStackIn, FakeBlockRenderTypes.LASER_MAIN_BEAM, (pose, builder) -> {
+      RenderLaser.drawDirewolfLaser(builder, pose.pose(), from, to, tile.getRed(), tile.getGreen(), tile.getBlue(), tile.getAlpha(), tile.getThick(), tilePos);
+      RenderLaser.drawDirewolfLaser(builder, pose.pose(), from, to, 1, 1, 1, tile.getAlpha(), coreThick, tilePos);
+    });
     matrixStackIn.popPose();
   }
 
@@ -105,7 +102,7 @@ public class RenderTransmit implements BlockEntityRenderer<TileWirelessTransmit,
     }
     else if (PreviewOutlineType.WIREFRAME.ordinal() == previewType) {
       for (BlockPos crd : shape) {
-        RenderBlockUtils.createBox(matrixStack, crd, Vec3.atLowerCornerOf(te.getBlockPos()));
+        RenderBlockUtils.createBox(submitNodeCollector, Vec3.atLowerCornerOf(crd.subtract(te.getBlockPos())), matrixStack, 1F, 1F, 1F, 1F);
       }
     }
   }

@@ -10,7 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -74,50 +74,50 @@ public class BeheadingEnchant {
       String key = type == null ? "" : type.toString();
       ////we allow all these, which include config, to override the vanilla skulls below
       Map<String, String> mappedBeheading = ConfigRegistry.getMappedBeheading();
-      if (target.getType() == EntityType.ENDER_DRAGON) {
+      if (target.getType() == EntityTypes.ENDER_DRAGON) {
         ItemStackUtil.drop(world, pos, new ItemStack(Items.DRAGON_HEAD));
       }
-      else if (target.getType() == EntityType.CREEPER) {
+      else if (target.getType() == EntityTypes.CREEPER) {
         ItemStackUtil.drop(world, pos, new ItemStack(Items.CREEPER_HEAD));
       }
-      else if (target.getType() == EntityType.ZOMBIE) {
+      else if (target.getType() == EntityTypes.ZOMBIE) {
         ItemStackUtil.drop(world, pos, new ItemStack(Items.ZOMBIE_HEAD));
       }
-      else if (target.getType() == EntityType.SKELETON) {
+      else if (target.getType() == EntityTypes.SKELETON) {
         ItemStackUtil.drop(world, pos, new ItemStack(Items.SKELETON_SKULL));
       }
-      else if (target.getType() == EntityType.WITHER_SKELETON) {
+      else if (target.getType() == EntityTypes.WITHER_SKELETON) {
         ItemStackUtil.drop(world, pos, new ItemStack(Items.WITHER_SKELETON_SKULL));
       }
-      else if (target.getType() == EntityType.PIGLIN) {
+      else if (target.getType() == EntityTypes.PIGLIN) {
         ItemStackUtil.drop(world, pos, new ItemStack(Items.PIGLIN_HEAD));
       }
-      else if (target.getType() == EntityType.WITHER) { //Drop number of heads equal to level of enchant [1,3]
+      else if (target.getType() == EntityTypes.WITHER) { //Drop number of heads equal to level of enchant [1,3]
         ItemStackUtil.drop(world, pos, new ItemStack(Items.WITHER_SKELETON_SKULL, Math.max(level, 3)));
       }
       else if (ModList.get().isLoaded(CompatConstants.TCONSTRUCT)) {
         //tconstruct: drowned_head husk_head enderman_head cave_spider_head stray_head
         String id = CompatConstants.TCONSTRUCT;
         ItemStack tFound = ItemStack.EMPTY;
-        if (target.getType() == EntityType.DROWNED) {
+        if (target.getType() == EntityTypes.DROWNED) {
           tFound = ItemStackUtil.findItem(id + ":drowned_head");
         }
-        else if (target.getType() == EntityType.HUSK) {
+        else if (target.getType() == EntityTypes.HUSK) {
           tFound = ItemStackUtil.findItem(id + ":husk_head");
         }
-        else if (target.getType() == EntityType.ENDERMAN) {
+        else if (target.getType() == EntityTypes.ENDERMAN) {
           tFound = ItemStackUtil.findItem(id + ":enderman_head");
         }
-        else if (target.getType() == EntityType.SPIDER) {
+        else if (target.getType() == EntityTypes.SPIDER) {
           tFound = ItemStackUtil.findItem(id + ":spider_head");
         }
-        else if (target.getType() == EntityType.CAVE_SPIDER) {
+        else if (target.getType() == EntityTypes.CAVE_SPIDER) {
           tFound = ItemStackUtil.findItem(id + ":cave_spider_head");
         }
-        else if (target.getType() == EntityType.STRAY) {
+        else if (target.getType() == EntityTypes.STRAY) {
           tFound = ItemStackUtil.findItem(id + ":stray_head");
         }
-        else if (target.getType() == EntityType.BLAZE) {
+        else if (target.getType() == EntityTypes.BLAZE) {
           tFound = ItemStackUtil.findItem(id + ":blaze_head");
         }
         if (!tFound.isEmpty()) {

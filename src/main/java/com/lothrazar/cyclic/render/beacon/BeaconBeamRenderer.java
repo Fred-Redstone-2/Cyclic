@@ -3,7 +3,7 @@ package com.lothrazar.cyclic.render.beacon;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BeaconRenderer;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -21,7 +21,7 @@ import org.joml.Matrix4f;
  * be reused directly.
  * <p>
  * The only entry point client code should call is
- * {@link #drawBeam(PoseStack, MultiBufferSource, float, long, int, int, int)},
+ * {@link #drawBeam(PoseStack, SubmitNodeCollector, float, long, int, int, int)},
  * which takes the ARGB color stored on a {@link BeaconBlockEntity.BeaconBeamSection}
  * and handles the float-component conversion internally.
  * <p>
@@ -37,7 +37,7 @@ public final class BeaconBeamRenderer {
    * Draw one segment of a beam at the default vanilla beam radius.
    *
    * @param ms        pose stack from the BER render method
-   * @param buf       buffer source from the BER render method
+   * @param collector deferred geometry collector from the BER render method
    * @param partial   partial tick from the BER render method
    * @param time      {@code level.getGameTime()}
    * @param yOffset   distance above the beacon at which this segment starts
@@ -46,10 +46,10 @@ public final class BeaconBeamRenderer {
    * @param argbColor beam tint as ARGB int (see
    *                  {@link BeaconBlockEntity.BeaconBeamSection#getColor()})
    */
-  public static void drawBeam(PoseStack ms, MultiBufferSource buf, float partial,
+  public static void drawBeam(PoseStack ms, SubmitNodeCollector collector, float partial,
                               long time, int yOffset, int height, int argbColor) {
     float[] rgb = argbToFloats(argbColor);
-    renderBeaconBeam(ms, buf, BeaconRenderer.BEAM_LOCATION, partial, 1.0F, time, yOffset, height, rgb, 0.2F, 0.25F);
+    renderBeaconBeam(ms, collector, BeaconRenderer.BEAM_LOCATION, partial, 1.0F, time, yOffset, height, rgb, 0.2F, 0.25F);
   }
 
   /**
@@ -64,12 +64,12 @@ public final class BeaconBeamRenderer {
     };
   }
 
-  public static void renderBeaconBeam(PoseStack ms, MultiBufferSource buf, float partial,
+  public static void renderBeaconBeam(PoseStack ms, SubmitNodeCollector collector, float partial,
                                       long time, int yOffset, int height, float[] rgb) {
-    renderBeaconBeam(ms, buf, BeaconRenderer.BEAM_LOCATION, partial, 1.0F, time, yOffset, height, rgb, 0.2F, 0.25F);
+    renderBeaconBeam(ms, collector, BeaconRenderer.BEAM_LOCATION, partial, 1.0F, time, yOffset, height, rgb, 0.2F, 0.25F);
   }
 
-  public static void renderBeaconBeam(PoseStack ms, MultiBufferSource buf, Identifier rl,
+  public static void renderBeaconBeam(PoseStack ms, SubmitNodeCollector collector, Identifier rl,
                                       float partial, float textureScale, long time,
                                       int yOffset, int height, float[] rgb,
                                       float innerRadius, float outerRadius) {
@@ -88,7 +88,7 @@ public final class BeaconBeamRenderer {
     float f12 = -innerRadius;
     float f15 = -1.0F + f2;
     float f16 = height * textureScale * (0.5F / innerRadius) + f15;
-    renderPart(ms, buf.getBuffer(RenderTypes.beaconBeam(rl, false)), r, g, b, 1.0F, yOffset, top,
+    submitPart(ms, collector, RenderTypes.beaconBeam(rl, false), r, g, b, 1.0F, yOffset, top,
         0.0F, innerRadius, innerRadius, 0.0F, f9, 0.0F, 0.0F, f12, 0.0F, 1.0F, f16, f15);
     ms.popPose();
     float f6 = -outerRadius;
@@ -97,16 +97,23 @@ public final class BeaconBeamRenderer {
     f9 = -outerRadius;
     f15 = -1.0F + f2;
     f16 = height * textureScale + f15;
-    renderPart(ms, buf.getBuffer(RenderTypes.beaconBeam(rl, true)), r, g, b, 0.125F, yOffset, top,
+    submitPart(ms, collector, RenderTypes.beaconBeam(rl, true), r, g, b, 0.125F, yOffset, top,
         f6, f7, outerRadius, f8, f9, outerRadius, outerRadius, outerRadius, 0.0F, 1.0F, f16, f15);
     ms.popPose();
   }
 
-  public static void renderPart(PoseStack ms, VertexConsumer vc,
+  private static void submitPart(PoseStack ms, SubmitNodeCollector collector, net.minecraft.client.renderer.rendertype.RenderType renderType,
+                                 float r, float g, float b, float a, int yBottom, int yTop,
+                                 float x1, float z1, float x2, float z2, float x3, float z3, float x4, float z4,
+                                 float u0, float u1, float vTop, float vBottom) {
+    collector.submitCustomGeometry(ms, renderType, (pose, vc) -> renderPart(pose, vc, r, g, b, a, yBottom, yTop,
+        x1, z1, x2, z2, x3, z3, x4, z4, u0, u1, vTop, vBottom));
+  }
+
+  public static void renderPart(PoseStack.Pose pose, VertexConsumer vc,
                                 float r, float g, float b, float a, int yBottom, int yTop,
                                 float x1, float z1, float x2, float z2, float x3, float z3, float x4, float z4,
                                 float u0, float u1, float vTop, float vBottom) {
-    PoseStack.Pose pose = ms.last();
     Matrix4f m4 = pose.pose();
     Matrix3f m3 = pose.normal();
     renderQuad(m4, m3, vc, r, g, b, a, yBottom, yTop, x1, z1, x2, z2, u0, u1, vTop, vBottom);

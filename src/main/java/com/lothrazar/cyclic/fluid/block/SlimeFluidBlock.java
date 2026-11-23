@@ -9,7 +9,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -40,23 +39,10 @@ public class SlimeFluidBlock extends GenericFluidBlock {
   }
 
   @Override
-  public void updateEntityMovementAfterFallOn(BlockGetter worldIn, Entity entityIn) {
-    if (entityIn.isSuppressingBounce()) {
-      super.updateEntityMovementAfterFallOn(worldIn, entityIn);
+  public float getBounceRestitution(Level level, BlockPos pos, BlockState state, Entity entity) {
+    if (entity.isSuppressingBounce()) {
+      return super.getBounceRestitution(level, pos, state, entity);
     }
-    else {
-      this.collision(entityIn);
-    }
-  }
-
-  /**
-   * From SlimeBlock.java bounceUp
-   */
-  private void collision(Entity entity) {
-    Vec3 vec3d = entity.getDeltaMovement();
-    if (vec3d.y < 0.0D) {
-      double d0 = entity instanceof LivingEntity ? 1.0D : 0.8D;
-      entity.setDeltaMovement(vec3d.x, -vec3d.y * d0, vec3d.z);
-    }
+    return entity instanceof LivingEntity ? 1.0F : 0.8F;
   }
 }

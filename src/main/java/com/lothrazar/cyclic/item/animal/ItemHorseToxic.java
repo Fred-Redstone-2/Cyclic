@@ -9,7 +9,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -34,7 +34,7 @@ public class ItemHorseToxic extends ItemBaseCyclic implements IEntityInteractabl
         || event.getEntity().getCooldowns().isOnCooldown(event.getItemStack())) {
       return;
     }
-    ZombieHorse zombieNew = EntityType.ZOMBIE_HORSE.spawn(serverLevel, (ItemStack) null, null, event.getPos(), EntitySpawnReason.NATURAL, false, false);
+    ZombieHorse zombieNew = EntityTypes.ZOMBIE_HORSE.spawn(serverLevel, (ItemStack) null, null, event.getPos(), EntitySpawnReason.NATURAL, false, false);
     if (zombieNew == null) {
       return;
     }

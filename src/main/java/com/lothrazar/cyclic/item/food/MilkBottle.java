@@ -1,7 +1,7 @@
 package com.lothrazar.cyclic.item.food;
 
 import com.lothrazar.cyclic.item.ItemBaseCyclic;
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;

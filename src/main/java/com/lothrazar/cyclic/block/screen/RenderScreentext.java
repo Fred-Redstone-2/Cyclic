@@ -2,9 +2,7 @@ package com.lothrazar.cyclic.block.screen;
 
 import com.lothrazar.library.util.RenderTextUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -12,6 +10,7 @@ import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
@@ -52,12 +51,10 @@ public class RenderScreentext implements BlockEntityRenderer<TileScreentext, Ren
     if (tile.requiresRedstone() && !tile.isPowered()) {
       return;
     }
-    MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
-    this.renderText(tile.getFieldString(0), tile, matrix, buffer, state.lightCoords, tile.getCurrentFacing());
-    buffer.endBatch();
+    this.renderText(tile.getFieldString(0), tile, matrix, submitNodeCollector, state.lightCoords, tile.getCurrentFacing());
   }
 
-  private void renderText(String text, TileScreentext tile, PoseStack matrix, MultiBufferSource buffer, int light, Direction side) {
+  private void renderText(String text, TileScreentext tile, PoseStack matrix, SubmitNodeCollector submitNodeCollector, int light, Direction side) {
     if (text == null || text.isEmpty()) {
       return;
     }
@@ -77,10 +74,9 @@ public class RenderScreentext implements BlockEntityRenderer<TileScreentext, Ren
     float scaleX = 0.05F, scaleY = 0.05F;
     matrix.scale(scaleX * fontSize, scaleY * fontSize, 1);
     //then draw it
-    Font fontRenderer = Minecraft.getInstance().font; //this.renderer.getFont();
     // the Font.DisplayMode.NORMAL was 'false'
-    fontRenderer.drawInBatch(text, 0, 0, tile.getColor(),
-        tile.getDropShadow(), matrix.last().pose(), buffer, Font.DisplayMode.NORMAL, 0, light); // 15728880
+    submitNodeCollector.submitText(matrix, 0, 0, Component.literal(text).getVisualOrderText(),
+        tile.getDropShadow(), Font.DisplayMode.NORMAL, tile.getColor(), 0, light, 0);
     matrix.popPose();
   }
 }

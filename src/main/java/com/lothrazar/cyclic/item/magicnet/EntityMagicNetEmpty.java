@@ -13,6 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -90,8 +91,9 @@ public class EntityMagicNetEmpty extends ThrowableItemProjectile {
         // which cheat by serializing their contents and don't follow normal mob capture logic)
         return;
       }
-      String id = EntityType.getKey(target.getType()).toString();
-      if (StringParseUtil.isInList(ConfigRegistry.getMobContainerEmptyList(), EntityType.getKey(target.getType()))) {
+      var entityId = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
+      String id = entityId.toString();
+      if (StringParseUtil.isInList(ConfigRegistry.getMobContainerEmptyList(), entityId)) {
         ModCyclic.LOGGER.debug("ignored by: CONFIG LIST" + id);
         return;
       }

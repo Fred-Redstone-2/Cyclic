@@ -46,12 +46,12 @@ public class ScreenLunchbox extends ScreenBase<ContainerLunchbox> {
 
   private static boolean shouldHideLayer(ItemStack stack) {
     Minecraft mc = Minecraft.getInstance();
-    if (mc.screen instanceof ScreenLunchbox lunchScreen) {
+    if (mc.gui.screen() instanceof ScreenLunchbox lunchScreen) {
       if (lunchScreen.getMenu().bag == stack) {
         return true;
       }
     }
-    if (mc.player != null && mc.screen instanceof AbstractContainerScreen<?> && !(mc.screen instanceof CreativeModeInventoryScreen)) {
+    if (mc.player != null && mc.gui.screen() instanceof AbstractContainerScreen<?> && !(mc.gui.screen() instanceof CreativeModeInventoryScreen)) {
       ItemStack carried = mc.player.containerMenu.getCarried();
       // 26.1: ItemStack#getFoodProperties(LivingEntity) removed - read DataComponents.FOOD directly and
       // replicate the same canEat(canAlwaysEat) hunger-aware check it used to do internally.

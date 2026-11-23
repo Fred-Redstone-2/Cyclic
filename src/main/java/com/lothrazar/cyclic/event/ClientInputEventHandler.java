@@ -58,7 +58,7 @@ public class ClientInputEventHandler {
   @SubscribeEvent
   public void onMouseButtonReleased(ScreenEvent.MouseButtonReleased.Pre event) {
     Minecraft mc = Minecraft.getInstance();
-    Screen screen = mc.screen;
+    Screen screen = mc.gui.screen();
     boolean rightClickDown = event.getButton() == 1;
     if (screen instanceof AbstractContainerScreen<?> gui && !(screen instanceof CreativeModeInventoryScreen)) {
       if (gui.getSlotUnderMouse() != null) {

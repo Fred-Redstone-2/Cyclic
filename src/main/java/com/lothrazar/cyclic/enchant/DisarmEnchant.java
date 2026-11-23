@@ -5,9 +5,9 @@ import com.lothrazar.cyclic.config.ConfigRegistry;
 import com.lothrazar.cyclic.registry.EnchantRegistry;
 import com.lothrazar.library.util.EnchantUtil;
 import com.lothrazar.library.util.StringParseUtil;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -79,8 +79,9 @@ public class DisarmEnchant {
   }
 
   private boolean canDisarm(LivingEntity target) {
-    String id = EntityType.getKey(target.getType()).toString();
-    if (StringParseUtil.isInList(ConfigRegistry.getDisarmIgnoreList(), EntityType.getKey(target.getType()))) {
+    var entityId = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
+    String id = entityId.toString();
+    if (StringParseUtil.isInList(ConfigRegistry.getDisarmIgnoreList(), entityId)) {
       ModCyclic.LOGGER.debug("disenchant ignored by: CONFIG LIST" + id);
       return false;
     }

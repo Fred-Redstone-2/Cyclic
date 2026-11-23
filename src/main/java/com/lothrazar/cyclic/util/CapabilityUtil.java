@@ -9,7 +9,9 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 public class CapabilityUtil {
 
@@ -17,21 +19,21 @@ public class CapabilityUtil {
     if (facing == null) {
       return false;
     }
-    return CapabilityUtil.item(level, facingPos, facing.getOpposite()) != null;
+    return level.getCapability(Capabilities.Item.BLOCK, facingPos, facing.getOpposite()) != null;
   }
 
   public static boolean isFluid(Direction facing, Level level, BlockPos facingPos) {
     if (facing == null) {
       return false;
     }
-    return CapabilityUtil.fluid(level, facingPos, facing.getOpposite()) != null;
+    return level.getCapability(Capabilities.Fluid.BLOCK, facingPos, facing.getOpposite()) != null;
   }
 
   public static boolean isEnergy(Direction facing, Level level, BlockPos facingPos) {
     if (facing == null) {
       return false;
     }
-    return CapabilityUtil.energy(level, facingPos, facing.getOpposite()) != null;
+    return level.getCapability(Capabilities.Energy.BLOCK, facingPos, facing.getOpposite()) != null;
   }
 
   public static IEnergyStorage energy(ItemStack stack) {
@@ -47,8 +49,8 @@ public class CapabilityUtil {
   }
 
   public static int energyStored(Level level, BlockPos pos) {
-    var handler = energy(level, pos, null);
-    return handler == null ? 0 : handler.getEnergyStored();
+    var handler = level.getCapability(Capabilities.Energy.BLOCK, pos, null);
+    return handler == null ? 0 : handler.getAmountAsInt();
   }
 
   public static IEnergyStorage energy(Level level, BlockPos pos, Direction dir) {
@@ -75,6 +77,10 @@ public class CapabilityUtil {
   public static IFluidHandler fluid(Level level, BlockPos pos, Direction dir) {
     var handler = level.getCapability(Capabilities.Fluid.BLOCK, pos, dir);
     return handler == null ? null : IFluidHandler.of(handler);
+  }
+
+  public static ResourceHandler<FluidResource> fluidResources(Level level, BlockPos pos, Direction dir) {
+    return level.getCapability(Capabilities.Fluid.BLOCK, pos, dir);
   }
 
   public static IItemHandler item(Level level, BlockPos pos) {

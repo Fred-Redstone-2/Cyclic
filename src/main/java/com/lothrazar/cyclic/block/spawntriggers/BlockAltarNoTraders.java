@@ -11,7 +11,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -104,9 +104,10 @@ public class BlockAltarNoTraders extends BlockCyclic implements SimpleWaterlogge
   }
 
   public static boolean isSpawnDenied(LivingEntity mob, EntitySpawnReason res) {
-    return mob.getType() == EntityType.TRADER_LLAMA
-        || mob.getType() == EntityType.WANDERING_TRADER
-        || mob.getType() == EntityType.BAT;
+    return mob.getType() == EntityTypes.TRADER_LLAMA
+        || mob.getType() == EntityTypes.WANDERING_TRADER
+        || mob.getType() == EntityTypes.BAT;
   }
 
 }
+

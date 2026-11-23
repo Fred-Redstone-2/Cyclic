@@ -3,9 +3,7 @@ package com.lothrazar.cyclic.block.endershelf;
 import com.lothrazar.cyclic.block.endershelf.TileEnderShelf.RenderTextType;
 import com.lothrazar.library.util.RenderTextUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -16,6 +14,7 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -78,8 +77,6 @@ public class EnderShelfRenderer implements BlockEntityRenderer<TileEnderShelf, E
     final double y = (3 * slot + 2) / sh;
     final double z = 1.01;
     final float scaleNum = 0.094F;
-    Font fontRenderer = Minecraft.getInstance().font; //this.renderer.getFont();
-    MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
     if (tile.renderStyle == RenderTextType.STACK) {
       final float sp = 0.19F;
       final float xf = 0.16F + slot * sp / 1.5F;
@@ -108,7 +105,8 @@ public class EnderShelfRenderer implements BlockEntityRenderer<TileEnderShelf, E
       ms.pushPose();
       ms.translate(x - 0.02, y + 0.06, z);
       ms.scale(1 / sh * scaleName, -1 / sh * scaleName, 0.00005F);
-      fontRenderer.drawInBatch(displayName, 0, 0, color, false, ms.last().pose(), buffer, Font.DisplayMode.NORMAL, 0, combinedLightIn);
+      submitNodeCollector.submitText(ms, 0, 0, Component.literal(displayName).getVisualOrderText(), false,
+          Font.DisplayMode.NORMAL, color, 0, combinedLightIn, 0);
       ms.popPose();
     }
     if (tile.renderStyle != RenderTextType.NONE) {
@@ -117,10 +115,10 @@ public class EnderShelfRenderer implements BlockEntityRenderer<TileEnderShelf, E
       ms.translate(x + 0.081F, y, z);
       ms.scale(1 / sh * scaleNum, -1 / sh * scaleNum, 0.00005F);
       String displayCount = "x" + stack.getCount();
-      fontRenderer.drawInBatch(displayCount, 110, 0, color, false, ms.last().pose(), buffer, Font.DisplayMode.NORMAL, 0, combinedLightIn);
+      submitNodeCollector.submitText(ms, 110, 0, Component.literal(displayCount).getVisualOrderText(), false,
+          Font.DisplayMode.NORMAL, color, 0, combinedLightIn, 0);
       ms.popPose();
     }
-    buffer.endBatch();
   }
 
   private float getScaleFactor(String displayName) {
